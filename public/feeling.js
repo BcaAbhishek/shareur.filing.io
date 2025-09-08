@@ -1,5 +1,5 @@
-// 🔗 Your Render backend API
-const API_BASE = "https://shareur-filing-io.onrender.com";
+// 🔗 Use relative paths (works on Render)
+const API_BASE = "";
 
 // Character counter
 const textarea = document.getElementById("emotionInput");
@@ -19,7 +19,7 @@ async function submitEmotion() {
   }
 
   try {
-    const res = await fetch(`${API_BASE}/feelings`, {
+    const res = await fetch(`/feelings`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ mood, text }),
@@ -40,7 +40,7 @@ async function submitEmotion() {
 // Load all feelings
 async function loadFeelings() {
   try {
-    const res = await fetch(`${API_BASE}/feelings`);
+    const res = await fetch(`/feelings`);
     const data = await res.json();
 
     const container = document.getElementById("entriesContainer");
@@ -71,7 +71,7 @@ async function loadFeelings() {
 // React to a feeling
 async function reactToFeeling(id, type) {
   try {
-    await fetch(`${API_BASE}/feelings/${id}/react`, {
+    await fetch(`/feelings/${id}/react`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type }),
@@ -87,12 +87,19 @@ async function reactToFeeling(id, type) {
 async function deleteFeeling(id) {
   console.log("🗑 Trying to delete ID:", id);
   try {
-    const res = await fetch(`${API_BASE}/feelings/${id}`, { method: "DELETE" });
+    const res = await fetch(`/feelings/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (!res.ok) throw new Error("Failed to delete");
+
     const data = await res.json();
     console.log("✅ Deleted:", data);
     loadFeelings();
   } catch (err) {
     console.error("❌ Error deleting feeling:", err);
+    alert("Delete failed!");
   }
 }
 
