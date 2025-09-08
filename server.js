@@ -15,7 +15,7 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 // In-memory storage (clears when server restarts)
 let feelings = [];
 
-// ✅ Serve frontend (optional if frontend is inside /public)
+// ✅ Serve static frontend
 app.use(express.static(path.join(__dirname, "public")));
 
 // ✅ Add new feeling
@@ -66,7 +66,7 @@ app.post('/feelings/:id/react', (req, res) => {
   res.json(feeling);
 });
 
-// ✅ Delete a feeling
+// ✅ Delete a feeling (must be before fallback)
 app.delete('/feelings/:id', (req, res) => {
   const id = Number(req.params.id);
   console.log("🗑 Delete request for ID:", id);
@@ -81,11 +81,11 @@ app.delete('/feelings/:id', (req, res) => {
   res.json({ message: "Feeling deleted", feeling: deletedFeeling });
 });
 
-// ✅ Fallback route
+// ✅ Fallback route (keep this last)
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// ✅ Dynamic PORT (Render/Heroku)
+// ✅ Dynamic PORT (Render)
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
